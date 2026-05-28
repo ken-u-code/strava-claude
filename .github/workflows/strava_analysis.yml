@@ -1,11 +1,26 @@
 name: Weekly Running Analysis
 
 on:
-  # Runs every Monday at 7:00 AM UTC — adjust timezone offset as needed
+  # -----------------------------------------------------------
+  # SCHEDULE SETTINGS
+  # Format: "minute hour day month weekday"
+  # All times are UTC (Sydney = UTC+10 / UTC+11 daylight saving)
+  #
+  # Current schedule: Every Monday at 8:00 PM Sydney time (UTC+10)
+  #
+  # To change time, adjust the hour. Examples:
+  #   "0 21 * * 1"     = Monday 9pm UTC (7am Tue Sydney DST)
+  #   "0 9 * * 1"      = Monday 9am UTC (7pm Mon Sydney)
+  #   "0 21 * * *"     = Every day 9pm UTC
+  #   "0 21 * * 1,4"   = Monday and Thursday 9pm UTC
+  #
+  # To TURN OFF: delete or comment out the two lines below (schedule + cron)
+  # To TURN ON:  uncomment them
+  # -----------------------------------------------------------
   schedule:
-    - cron: "0 7 * * 1"
+    - cron: "0 21 * * 1"
 
-  # Also allows manual trigger from the GitHub Actions UI
+  # Manual trigger — always available via GitHub Actions UI
   workflow_dispatch:
     inputs:
       days:

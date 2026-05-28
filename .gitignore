@@ -4,3 +4,4 @@ __pycache__/
 report.md
 *.egg-info/
 .venv/
+# athlete_profile.md is intentionally tracked — do NOT add it here

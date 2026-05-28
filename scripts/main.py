@@ -8,7 +8,7 @@ Usage:
 """
 
 import os
-from datetime import date
+from datetime import date, datetime
 
 from strava import fetch_recent_runs, fetch_athlete_stats, format_runs_for_prompt
 from analyze import analyse_runs
@@ -19,9 +19,27 @@ from metrics import (
     check_injury_risk,
     format_metrics_for_prompt,
 )
+from alerts import run_all_alerts, format_alerts_for_report
+
+PROFILE_PATH = os.path.join(os.path.dirname(__file__), "..", "athlete_profile.md")
+
+
+def load_athlete_profile() -> str:
+    try:
+        with open(PROFILE_PATH, "r") as f:
+            return f.read()
+    except FileNotFoundError:
+        return ""
 
 
 def main():
+    print("Loading athlete profile...")
+    athlete_profile = load_athlete_profile()
+    if athlete_profile:
+        print("✅ Athlete profile loaded.")
+    else:
+        print("⚠️  No athlete_profile.md found — running without personal context.")
+
     print("Fetching Strava data (90 days for fitness metrics)...")
     all_runs = fetch_recent_runs(days=90)
     recent_runs = [r for r in all_runs if _days_ago(r) <= 14]
@@ -34,15 +52,18 @@ def main():
     injury = check_injury_risk(all_runs)
     metrics_summary = format_metrics_for_prompt(ctl, atl, tsb, race_preds, injury)
 
-    # --- Athlete context ---
+    # --- Automated alerts ---
+    alerts = run_all_alerts(recent_runs)
+    alerts_text = format_alerts_for_report(alerts)
+
+    # --- YTD context ---
     athlete_id = os.environ.get("STRAVA_ATHLETE_ID", "")
-    athlete_context = ""
+    ytd_context = ""
     if athlete_id:
         try:
-            from strava import fetch_athlete_stats
             stats = fetch_athlete_stats(athlete_id)
             ytd = stats.get("ytd_run_totals", {})
-            athlete_context = (
+            ytd_context = (
                 f"Year-to-date: {ytd.get('count', 0)} runs, "
                 f"{ytd.get('distance', 0)/1000:.1f} km, "
                 f"{ytd.get('moving_time', 0)//3600} hours"
@@ -53,21 +74,28 @@ def main():
     runs_summary = format_runs_for_prompt(recent_runs)
 
     print("Sending to Claude for analysis...")
-    analysis = analyse_runs(runs_summary, metrics_summary, athlete_context)
+    analysis = analyse_runs(
+        runs_summary=runs_summary,
+        metrics_summary=metrics_summary,
+        athlete_profile=athlete_profile,
+        ytd_context=ytd_context,
+    )
 
     report = f"""# Running Analysis — {date.today().strftime("%B %d, %Y")}
+
+## 🚨 Automated Alerts
+{alerts_text}
 
 {analysis}
 
 ---
 **Metrics snapshot** | Fitness (CTL): {ctl} | Fatigue (ATL): {atl} | Form (TSB): {tsb:+.1f}
-*Generated automatically from Strava data. {len(recent_runs)} activities in past 14 days analysed.*
+*Generated automatically from Strava data · {len(recent_runs)} activities in past 14 days · Athlete profile v2 loaded*
 """
     print(report)
 
 
 def _days_ago(run: dict) -> int:
-    from datetime import datetime
     run_dt = datetime.fromisoformat(run["start_date_local"][:19])
     return (datetime.now() - run_dt).days
 

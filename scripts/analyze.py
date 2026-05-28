@@ -44,22 +44,34 @@ Include 3-5 relevant hashtags on the last line.
 """
 
 
-def analyse_runs(runs_summary: str, metrics_summary: str = "", athlete_context: str = "") -> str:
+def analyse_runs(
+    runs_summary: str,
+    metrics_summary: str = "",
+    athlete_profile: str = "",
+    ytd_context: str = "",
+) -> str:
     client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
 
-    user_message = f"""Here is the athlete's running data for the past 14 days:
+    profile_block = (
+        f"<athlete_profile>\n{athlete_profile}\n</athlete_profile>\n"
+        if athlete_profile
+        else ""
+    )
+
+    user_message = f"""{profile_block}
+Here is the athlete's running data for the past 14 days:
 
 {runs_summary}
 
 {metrics_summary}
 
-{f"Additional context: {athlete_context}" if athlete_context else ""}
+{f"Year-to-date context: {ytd_context}" if ytd_context else ""}
 
-Please provide your full analysis."""
+Using the athlete profile above for full context on this athlete's history, goals, physiology, and coaching rules, please provide your full analysis. Reference specific data points from their profile where relevant (e.g. compare current Zone 2 pace to their benchmark table, flag if session type is on their confirmed ineffective list, reference Shanghai sub-3 decision gates)."""
 
     response = client.messages.create(
         model=MODEL,
-        max_tokens=2000,
+        max_tokens=2500,
         system=SYSTEM_PROMPT,
         messages=[{"role": "user", "content": user_message}],
     )

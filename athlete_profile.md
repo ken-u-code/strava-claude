@@ -206,7 +206,27 @@ The 1:36:21 Hoka result significantly understates current fitness. Training data
 
 ---
 
-## 9. SPEED TEST BLOCK (May 2026)
+## 9. CURRENT BLOCK — BALLOT HOLDING PATTERN (Late May – Shanghai ballot result)
+
+**Purpose:** Maintain fitness whilst awaiting Shanghai ballot · build progressive load · no peak stress
+**Weekly volume target:** 40–50 km
+**Structure:** Polarised base maintained · tempo sessions woven in · long runs with progressive finish
+**Updated:** May 30 2026
+
+### Current training intent
+- Maintain aerobic base at 40–50 km/week — do not let fitness drop while waiting
+- Weave in tempo sessions (not full threshold blocks) to keep sharpness
+- Long runs with progressive finish (confirmed preferred format) — not fartlek
+- Avoid peaking — this is a holding pattern, not a build block
+- Once Shanghai confirmed → transition immediately into HM block (Section 10)
+
+### Block rules
+- No heavy VO2 blocks until ballot confirmed
+- Tempo pace 4:35–4:50/km (controlled, not threshold ceiling)
+- Long run progressive finish: final 3–5km at 4:48–5:00/km effort
+- Keep easy runs genuinely easy — HR under 138 bpm
+
+## 9b. SPEED TEST BLOCK (May 2026)
 
 **Purpose:** Post-Hoka recovery · speed development · await Shanghai ballot · test session types
 

@@ -10,16 +10,16 @@ Usage:
 import os
 from datetime import date, datetime
 
-from strava import fetch_recent_runs, fetch_athlete_stats, format_runs_for_prompt
-from analyze import analyse_runs
-from metrics import (
+from .strava import fetch_recent_runs, fetch_athlete_stats, format_runs_for_prompt
+from .analyze import analyse_runs
+from .metrics import (
     compute_daily_load,
     compute_fitness_freshness,
     predict_race_times,
     check_injury_risk,
     format_metrics_for_prompt,
 )
-from alerts import run_all_alerts, format_alerts_for_report
+from .alerts import run_all_alerts, format_alerts_for_report
 
 PROFILE_PATH = os.path.join(os.path.dirname(__file__), "..", "athlete_profile.md")
 

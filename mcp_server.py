@@ -26,6 +26,8 @@ from scripts.alerts import run_all_alerts, format_alerts_for_report
 
 PROFILE_PATH = Path(__file__).parent / "athlete_profile.md"
 
+PORT = int(os.environ.get("PORT", 8000))
+
 mcp = FastMCP(
     "strava-running",
     instructions=(
@@ -36,6 +38,8 @@ mcp = FastMCP(
         "specific benchmarks (Zone 2 pace table, threshold HR 171-174, cadence "
         "180-193 spm) when giving coaching advice."
     ),
+    host="0.0.0.0",
+    port=PORT,
     stateless_http=True,
 )
 
@@ -267,5 +271,4 @@ def get_athlete_stats() -> str:
 
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8000))
-    mcp.run(transport="streamable-http", host="0.0.0.0", port=port)
+    mcp.run(transport="streamable-http")
